@@ -1,5 +1,6 @@
 <script setup>
 import { computed, ref } from 'vue'
+import { fileUrl } from '@/api'
 import PackArt from './PackArt.vue'
 
 const props = defineProps({
@@ -66,7 +67,11 @@ const filtered = computed(() => {
     <div class="catalogue">
       <article v-for="product in filtered" :key="product.name" class="pcard">
         <div class="pvis">
-          <PackArt :slug="slugFor(product.category)" :brand="product.brand" :image="product.image" />
+          <PackArt
+            :slug="slugFor(product.category)"
+            :brand="product.brand"
+            :image="fileUrl(product.image)"
+          />
           <span class="ptag">{{ product.category }}</span>
         </div>
         <div class="pbody">

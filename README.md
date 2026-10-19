@@ -29,16 +29,35 @@ Requests to `/api` are proxied to the bench. Point them elsewhere with:
 FRAPPE_BACKEND=http://127.0.0.1:8000 FRAPPE_SITE=mysite.localhost yarn dev
 ```
 
-## Building for production
+## Deploying to Vercel
 
-For standalone hosting — Netlify, Vercel, nginx, anything — build to `dist/`:
+The site is a static build that talks to the Frappe backend over the API, so
+Vercel hosts it as-is. `vercel.json` already sets the build command, the output
+directory and the SPA rewrite that makes `/products` and the other routes work
+on a direct visit or a refresh.
 
-```bash
-yarn build
-```
+1. In Vercel: **Add New → Project**, import `appexa-frontend`. The settings come
+   from `vercel.json`; nothing to fill in.
+2. Add one environment variable, for every environment:
 
-The site then calls the API on the same origin, so put the Frappe backend
-behind the same domain or add a rewrite for `/api`.
+   | Name | Value |
+   |---|---|
+   | `VITE_FRAPPE_URL` | `https://appexa.frappe.cloud` |
+
+   Without it the site calls its own origin, finds no API, and renders empty.
+   It is read at build time, so changing it needs a redeploy.
+3. Allow the Vercel origin on the backend. In the Frappe Cloud dashboard open
+   **Site Config** and add:
+
+   | Key | Value |
+   |---|---|
+   | `allow_cors` | `https://your-site.vercel.app` |
+
+   Use the real domain once you point one at Vercel. A list works too, for
+   keeping the preview and production domains. `*` allows any origin — fine
+   while testing, worth narrowing afterwards.
+
+Deploys happen on every push to `main`.
 
 To have Frappe itself serve the site at `/site` instead, build into the backend
 app and point `FRAPPE_OUT` at its public folder:

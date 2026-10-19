@@ -1,6 +1,7 @@
 <script setup>
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
+import { fileUrl } from '@/api'
 import PackArt from './PackArt.vue'
 
 const props = defineProps({ slides: { type: Array, default: () => [] } })
@@ -75,7 +76,7 @@ if (prefersReducedMotion) stop()
               </div>
             </div>
             <div class="slide-art">
-              <img v-if="slide.image" :src="slide.image" :alt="slide.title" />
+              <img v-if="slide.image" :src="fileUrl(slide.image)" :alt="slide.title" />
               <div v-else class="art-pair" aria-hidden="true">
                 <PackArt
                   v-for="art in artPairs[i % artPairs.length]"

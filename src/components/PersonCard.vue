@@ -1,7 +1,10 @@
 <script setup>
 import { computed } from 'vue'
+import { fileUrl } from '@/api'
 
 const props = defineProps({ person: { type: Object, required: true } })
+
+const photo = computed(() => fileUrl(props.person.photo))
 
 // Placeholder portrait: a flat silhouette tinted per person, so an unfilled
 // roster still looks deliberate. A Team Member with a photo shows the photo.
@@ -26,7 +29,7 @@ const tone = computed(() => TONES[seed.value % TONES.length])
 <template>
   <article class="person">
     <div class="pphoto">
-      <img v-if="person.photo" :src="person.photo" :alt="person.member_name || person.designation" />
+      <img v-if="photo" :src="photo" :alt="person.member_name || person.designation" />
       <svg v-else viewBox="0 0 200 220" role="img" :aria-label="`${person.designation} portrait placeholder`">
         <rect width="200" height="220" :fill="tone[0]" />
         <circle cx="100" cy="92" r="42" :fill="tone[1]" />
